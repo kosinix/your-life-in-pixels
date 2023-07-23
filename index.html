@@ -85,7 +85,7 @@
         </div>
     </div>
     <img class="bg" src="images/bg.jpg" alt="" width="1920" height="1919">
-    <img class="train pause" src="images/train.png" alt="" width="1037" height="195">
+    <img class="train pause" src="images/train.png" id="train" alt="" width="1037" height="195">
 
     <script src="js/jquery.slim.min.js"></script>
     <script src="js/popper.min.js"></script>
@@ -131,9 +131,13 @@
                 // me.onChange()
                 // me.page = 3
 
-                jQuery('.train').removeClass('pause')
-
-                
+                if (document.getElementById('train').complete) {
+                    jQuery('.train').removeClass('pause')
+                } else {
+                    document.getElementById('train').addEventListener('load', function(){
+                        jQuery('.train').removeClass('pause')
+                    })
+                }
             },
             watch: {
                 page: function(current, before){
