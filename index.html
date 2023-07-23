@@ -19,32 +19,66 @@
             <div class="col-md-12 text-center">
                 
                 <!-- <h1 class="h5 mb-5">Your Life in Pixels</h1> -->
-                <div class="form-row align-items-center mb-4 mt-5">
-                    <div class="col-md-12 text-md-left">
-                        <label for="birthDate mb-0">When is your birthday?</label>
+                <div class="page" v-if="page==1">
+                    <div class="form-row align-items-center mb-4 mt-5">
+                        <div class="col-md-12 text-md-left">
+                            <label for="birthDate mb-0">When is your birthday?</label>
+                        </div>
+                        <div class="col-md-12 text-md-left d-flex">
+                            <select v-model="birthMonth" @change="onMonthChange" name="birthMonth" id="birthMonth">
+                                <option v-for="month in months" :value="month|formatDate('MM')">${month|formatDate('MMMM')}</option>
+                            </select>
+                            <select v-model="birthDay" name="birthDay" id="birthDay" class="ml-1 mr-1">
+                                <option v-for="day in days" :value="day|padStart(2, '0')">${day}</option>
+                            </select>
+                            <input @change="onChange" @keypress="isNumber($event)" v-model="birthYear" id="birthYear" name="birthYear" type="text" maxlength="4" minlength="4">
+                            <button v-if="age > 5 && age < 100" @click="page=2" class="btn btn-warning ml-1 mr-1" type="button">Start</button>
+                        </div>
                     </div>
-                    <div class="col-md-12 text-md-left">
-                        <input @change="onChange" v-model="birthDate" type="date">
+                    <div class="form-row align-items-center mb-4">
+                        <div class="col-md-12 d-flex flex-wrap">
+                            <div v-if="error" class="d-inline-block alert alert-warning">${error}</div>
+                        </div>
                     </div>
                 </div>
-                <div class="form-row align-items-center mb-4">
-                    <div class="col-md-12 d-flex flex-wrap justify-content-center">
-                        <div v-if="age" class="mb-2 d-inline-block alert alert-warning">You are ${age} years old</div>
-                        <div v-if="error" class="d-inline-block alert alert-warning">${error}</div>
+                <div v-if="page==2" class="page">
+                    <div class="form-row align-items-center mb-4">
+                        <div class="col-md-12 d-flex flex-wrap justify-content-center">
+                            <div class="mb-2 d-inline-block alert alert-warning">You are ${age} years old</div>
+                        </div>
+                    </div>
+                    <div class="form-row align-items-center mb-4">
+                        <div class="col-md-12 d-flex flex-wrap justify-content-center">
+                            <button @click="page=3" class="btn btn-warning ml-1 mr-1" type="button">Next</button>
+                        </div>
                     </div>
                 </div>
-                <div v-if="age" class="form-row align-items-center mb-4">
-                    <div class="col-md-12 d-flex flex-wrap justify-content-center">
-                        <div :class="pixelize(px)" v-for="px in pixels">${px}</div>
+                <div v-if="page==3" class="page">
+                    <div class="form-row align-items-center mb-4">
+                        <div class="col-md-12 d-flex flex-wrap justify-content-center">
+                            <div class="mb-2 d-inline-block alert alert-warning">${agePackString}</div>
+                        </div>
+                    </div>
+                    <div class="form-row align-items-center mb-4">
+                        <div class="col-md-12 d-flex flex-wrap justify-content-center">
+                            <button @click="page=4" class="btn btn-warning ml-1 mr-1" type="button">Next</button>
+                        </div>
                     </div>
                 </div>
-                <div v-if="age" class="form-row align-items-center mb-4">
-                    <div class="col-md-12">
-                        <div v-if="age" class="mb-2 d-inline-block alert alert-warning">On average, a Filipino can live up to 71</div>
-                        <br>
-                        <div v-if="age" class="mb-2 d-inline-block alert alert-warning">You are now at ${Math.round(age/71*100)}%</div>
-                        <br>
-                        <div v-if="age" class="mb-2 d-inline-block alert alert-warning">Time is the most precious commodity. Are you spending it wisely?</div>
+                <div v-if="page==4" class="page">
+                    <div v-if="age" class="form-row align-items-center mb-4">
+                        <div class="col-md-12 d-flex flex-wrap justify-content-center">
+                            <div :class="pixelize(px)" v-for="px in pixels">${px}</div>
+                        </div>
+                    </div>
+                    <div v-if="age" class="form-row align-items-center mb-4">
+                        <div class="col-md-12">
+                            <div v-if="age" class="mb-2 d-inline-block alert alert-warning">On average, a Filipino can live up to 71</div>
+                            <br>
+                            <div v-if="age" class="mb-2 d-inline-block alert alert-warning">You are now at ${Math.round(age/71*100)}%</div>
+                            <br>
+                            <div v-if="age" class="mb-2 d-inline-block alert alert-warning">Time is the most precious commodity. Are you spending it wisely?</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -66,52 +100,153 @@
             ],
             data: {
                 pending: false,
-                // birthDate: '1986-09-15',
-                birthDate: '',
+                page: 1,
+                birthMonth: '01',
+                birthDay: '01',
+                birthYear: '',
                 error: '',
                 pixels: [],
+                months: [],
+                days: [],
+                agePackString: ''
+            },
+            filters: {
+                formatDate: function(date, format){
+                    return moment(date).format(format)
+                },
+                padStart: function(day, length, format){
+                    return (new String(day)).padStart(length, format)
+                },
             },
             mounted: function(){
-                // this.onChange()
+                const me = this
+
+                me.months = Array.from(Array(12).keys()).map(i => moment().startOf('year').month(i))
+                me.days = Array.from(Array(31).keys()).map(i => i + 1)
+
+                jQuery('#birthYear').focus()
+                me.birthDay = '15'
+                me.birthMonth = '09'
+                me.birthYear = '1986'
+                me.onChange()
+                // me.page = 3
+
+
+                
+            },
+            watch: {
+                page: function(current, before){
+                    const me = this
+
+                    if(current == 2){
+
+                    }
+                    if(current == 2){
+                        jQuery('.train').addClass('pause')
+                        let timer = setInterval(()=>{
+                            let agePack = me.getAgePack()
+                            me.agePackString = `You are ${agePack.years} years, ${agePack.months} months, ${agePack.days} days, ${agePack.hours} hours, ${agePack.minutes} minutes and ${agePack.seconds} seconds old`
+                        }, 1000)
+                    }
+                }
             },
             computed: {
+                
                 age: function(){
                     const me = this
                     let mDate = moment()
-                    let mBirthDate = moment(me.birthDate)
+                    let mBirthDate = moment(`${me.birthYear}-${me.birthMonth}-${me.birthDay}`, 'YYYY-MM-DD', true)
                     if(mBirthDate.isValid()){
-                        let diff = mDate.diff(mBirthDate, 'years')
-
-                        if(diff > 5 && diff <= 100){
-                            return diff
-                        }
+                        return mDate.diff(mBirthDate, 'years')
                     }
                     return 0
+                },
+                agePack: function(){
+                    const me = this
+                    let mDate = moment()
+                    let mBirthDate = moment(`${me.birthYear}-${me.birthMonth}-${me.birthDay}`, 'YYYY-MM-DD', true)
+                    if(mBirthDate.isValid()){
+                        let m = moment.duration(mDate.diff(mBirthDate))
+                        return {
+                            years: m.years(),
+                            months: m.months(),
+                            days: m.days(),
+                            hours: m.hours(),
+                            seconds: m.seconds(),
+                        }
+                    }
+                    return {
+                        years: 0,
+                        months: 0,
+                        days: 0,
+                        hours: 0,
+                        seconds: 0,
+                    }
                 }
             },
+            
             methods: {
+                getAgePack: function(){
+                    const me = this
+                    let mDate = moment()
+                    let mBirthDate = moment(`${me.birthYear}-${me.birthMonth}-${me.birthDay}`, 'YYYY-MM-DD', true)
+                    if(mBirthDate.isValid()){
+                        let m = moment.duration(mDate.diff(mBirthDate))
+                        return {
+                            years: m.years(),
+                            months: m.months(),
+                            days: m.days(),
+                            hours: m.hours(),
+                            minutes: m.minutes(),
+                            seconds: m.seconds(),
+                        }
+                    }
+                    return {
+                        years: 0,
+                        months: 0,
+                        days: 0,
+                        hours: 0,
+                        minutes: 0,
+                        seconds: 0,
+                    }
+
+                    //return `You are ${agePack.years} years, ${agePack.months} months, ${agePack.days} days, ${agePack.hours} hours and ${agePack.seconds} seconds old`
+                },
+                roundOff: function(number, precision = 2) {
+                    number = parseFloat(number)
+                    precision = parseInt(precision)
+                    let factor = Math.pow(10, precision)
+                    let n = precision < 0 ? number : 0.01 / factor + number
+                    return Math.round( n * factor) / factor
+                },
+                isNumber: function(evt) {
+                    evt = (evt) ? evt : window.event;
+                    var charCode = (evt.which) ? evt.which : evt.keyCode;
+                    if (charCode >= 48 && charCode <= 57) { // Allow only 0-9
+                        return true
+                    }
+                    evt.preventDefault();;
+                },
+                onMonthChange: function(){
+                    const me = this
+                   
+                },
                 onChange: function(){
                     const me = this
+                    me.error = ''
+                    if(me.age > 1000){
+                        me.error = ''
 
-                    let mDate = moment()
-                    let mBirthDate = moment(me.birthDate)
-                    if(mBirthDate.isValid()){
-                        let diff = mDate.diff(mBirthDate, 'years')
+                    } else if(me.age > 100){
+                        me.error = `Are you sure you are ${me.age} years old??`
 
-                        if(diff > 1000){
-                            me.error = ''
+                    } else if (me.age <= 5){
+                        me.error = 'You are too young to use this...'
 
-                        } else if(diff > 100){
-                            me.error = 'You look younger than your age...'
-
-                        } else if (diff <= 5){
-                            me.error = 'You are too young to use this...'
-
-                        } else {
-                            me.error = ''
-                            console.log(diff)
-                            me.pixels = Array.from(Array(71).keys()).map((i,k)=>k+1)
-                        }
+                    } else {
+                        me.error = ''
+                        me.pixels = Array.from(Array(71).keys()).map(i => i + 1 )
+                        // me.page = 2
                     }
                 },
                 pixelize: function(px){

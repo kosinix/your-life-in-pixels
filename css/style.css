@@ -57,7 +57,9 @@ label {
     color: orange;
     text-shadow: 0 0 4px #000;
 }
-input[type="date"]{
+select,
+input[type="date"],
+input[type="text"]{
     color: orange;
     text-shadow: 0 0 3px #222;
     background: none;
@@ -65,6 +67,9 @@ input[type="date"]{
     padding: 5px;
     border-radius: 3px;
     color-scheme: dark;
+}
+input[type="text"]{
+    width: 60px;
 }
 .bg {
     position: fixed;
@@ -87,9 +92,13 @@ input[type="date"]{
 
 
 .train {
-    animation: scan 30s infinite;
+    animation: scan 30s ;
     animation-delay: 5s;
 }
+/* .train.pause {
+    animation-play-state: paused;
+    animation-name: none;
+} */
 
 @keyframes scan {
     0% { transform:translate(0%, -64%)}
