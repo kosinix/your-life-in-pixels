@@ -7,6 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <base href="https://kosinix.github.io/your-life-in-pixels/" />
     <!-- <base href="http://127.0.0.1:9293" /> -->
+    <meta property="og:url" content="https://kosinix.github.io/your-life-in-pixels/" />
+    <meta property="og:title" content="Your Life in Pixels" />
+    <meta property="og:description" content="Time. Are you spending it wisely?" />
+    <meta property="og:image" content="https://kosinix.github.io/your-life-in-pixels/images/train.png" />
     <link rel="shortcut icon" href="favicon.png" />
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
@@ -21,10 +25,10 @@
                 <!-- <h1 class="h5 mb-5">Your Life in Pixels</h1> -->
                 <div class="page" v-if="page==1">
                     <div class="form-row align-items-center mb-4 mt-5">
-                        <div class="col-md-12 text-md-left">
+                        <div class="col-md-12 text-md-left d-flex justify-content-center">
                             <label for="birthDate mb-0">When is your birthday?</label>
                         </div>
-                        <div class="col-md-12 text-md-left d-flex">
+                        <div class="col-md-12 text-md-left d-flex justify-content-center">
                             <select v-model="birthMonth" @change="onMonthChange" name="birthMonth" id="birthMonth">
                                 <option v-for="month in months" :value="month|formatDate('MM')">${month|formatDate('MMMM')}</option>
                             </select>
@@ -67,17 +71,80 @@
                 </div>
                 <div v-if="page==4" class="page">
                     <div v-if="age" class="form-row align-items-center mb-4">
-                        <div class="col-md-12 d-flex flex-wrap justify-content-center">
-                            <div :class="pixelize(px)" v-for="px in pixels">${px}</div>
+                        <div class="col-md-12 mb-4">
+                            <p class="text-orange">If each pixel <span class="px px0"></span> is 1 year of your life, 
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <button @click="page=4.1" class="btn btn-warning ml-1 mr-1" type="button">Next</button>
                         </div>
                     </div>
+                </div>
+                <div v-if="page==4.1" class="page">
                     <div v-if="age" class="form-row align-items-center mb-4">
+                        <div class="col-md-12 mb-4">
+                            <p class="text-orange">If each pixel <span class="px px0"></span> is 1 year of your life, <br><br> this is your life over a 100-year period:</p>
+                        </div>
+                        <div class="col-md-12 mb-4 ">
+                            <div v-for="chunk in pixels" class="d-flex flex-wrap justify-content-center">
+                                <div :class="pixelize1(px)" v-for="px in chunk" :title="`Year ${px}`">
+                                    <small v-if="px==100" class="text-white px-point">← 100th year</small>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-md-12">
-                            <div v-if="age" class="mb-2 d-inline-block alert alert-warning">On average, a Filipino can live up to 71</div>
-                            <br>
-                            <div v-if="age" class="mb-2 d-inline-block alert alert-warning">You are now at ${Math.round(age/71*100)}%</div>
-                            <br>
-                            <div v-if="age" class="mb-2 d-inline-block alert alert-warning">Time is the most precious commodity. Are you spending it wisely?</div>
+                            <button @click="page=5" class="btn btn-warning ml-1 mr-1" type="button">Next</button>
+                        </div>
+                    </div>
+                </div>
+                <div v-if="page==5" class="page">
+                    <div v-if="age" class="form-row align-items-center mb-4">
+                        <div class="col-md-12 mb-4">
+                            <p class="text-orange">However, the average human life is only 71, <br><br> this is your life over a 71-year period:</p>
+                        </div>
+                        <div class="col-md-12 mb-4 ">
+                            <div v-for="chunk in pixels" class="d-flex flex-wrap justify-content-center">
+                                <div :class="pixelize(px)" v-for="px in chunk" :title="`Year ${px}`">
+                                    <small v-if="px==71" class="text-white px-point2">71 years →</small>
+                                    <small v-if="px==100" class="text-white px-point">← 100th year</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <button @click="page=5.1" class="btn btn-warning ml-1 mr-1" type="button">Next</button>
+                        </div>
+                    </div>
+                </div>
+                <div v-if="page==5.1" class="page">
+                    <div v-if="age" class="form-row align-items-center mb-4">
+                        <div class="col-md-12 mb-4">
+                            <p v-if="Math.round(age/71*100) < 100" class="text-orange">You have now colored ${Math.round(age/71*100)}% of your pixels...</p>
+                            <p v-else class="text-orange">Congratulations for a very long life <br> consider this your bonus years.</p>
+                        </div>
+                        <div class="col-md-12 mb-4 ">
+                            <div v-for="chunk in pixels" class="d-flex flex-wrap justify-content-center">
+                                <div :class="pixelize(px)" v-for="px in chunk" :title="`Year ${px}`">
+                                    <small v-if="px==71" class="text-white px-point2">71 years →</small>
+                                    <small v-if="px==100" class="text-white px-point">← 100th year</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <button @click="page=6" class="btn btn-warning ml-1 mr-1" type="button">Next</button>
+                        </div>
+                    </div>
+                </div>
+                <div v-if="page==6" class="page">
+                    <div v-if="age" class="form-row align-items-center mb-4">
+                        <div class="col-md-12 mb-4">
+                            <p class="text-orange">Time is the most precious commodity. <br>Are you spending it wisely?</p>
+                        </div>
+                        <div class="col-md-12">
+                            <a class="btn btn-warning text-white ml-1 mr-1 d-inline-flex align-items-center" :href="share">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24"><title>FB</title><path fill="white" d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96A10 10 0 0 0 22 12.06C22 6.53 17.5 2.04 12 2.04Z" /></svg>
+                                <span class="ml-1">Share on FB</span>
+                            </a>
+                            <p class="text-orange" style="position: fixed; bottom: 0; left: 0; width: 100%; text-align: center;"><em>by <br><a class="text-orange" href="https://kosinix.github.io">Nico Amarilla</a></em></p>
                         </div>
                     </div>
                 </div>
@@ -91,8 +158,11 @@
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/moment.min.js"></script>
+    <script src="js/lodash.min.js"></script>
     <script src="js/vue.js"></script>
     <script>
+        
+        let timer1 = null
         let vApp = new Vue({
             el: '#vApp',
             delimiters: ["${", "}"],
@@ -108,7 +178,8 @@
                 pixels: [],
                 months: [],
                 days: [],
-                agePackString: ''
+                agePackString: '',
+                share: `https://facebook.com/sharer/sharer.php?u=https://kosinix.github.io/your-life-in-pixels/`
             },
             filters: {
                 formatDate: function(date, format){
@@ -125,32 +196,51 @@
                 me.days = Array.from(Array(31).keys()).map(i => i + 1)
 
                 jQuery('#birthYear').focus()
-                // me.birthDay = '15'
-                // me.birthMonth = '09'
-                // me.birthYear = '1986'
-                // me.onChange()
-                // me.page = 3
+                me.birthDay = '15'
+                me.birthMonth = '09'
+                me.birthYear = '1986'
+                me.onChange()
+                me.page = 4
 
-                if (document.getElementById('train').complete) {
+
+                let doTrain = () => {
                     jQuery('.train').removeClass('pause')
+                    // let timer = setTimeout(()=>{
+                    //     jQuery('.train').addClass('pause')
+                    // }, 9000)
+                }
+                if (document.getElementById('train').complete) {
+                    doTrain()
                 } else {
                     document.getElementById('train').addEventListener('load', function(){
-                        jQuery('.train').removeClass('pause')
+                        doTrain()
                     })
                 }
             },
             watch: {
                 page: function(current, before){
                     const me = this
-
+                    console.log(current, before)
                     if(current == 2){
-
+                        // jQuery('.train').removeClass('pause')
                     }
-                    if(current == 2){
-                        let timer = setInterval(()=>{
+                    if(current == 3){
+                        let fn = () => {
                             let agePack = me.getAgePack()
-                            me.agePackString = `You are ${agePack.years} years, ${agePack.months} months, ${agePack.days} days, ${agePack.hours} hours, ${agePack.minutes} minutes and ${agePack.seconds} seconds old`
-                        }, 1000)
+                            me.agePackString = `${agePack.years} years, ${agePack.months} months, ${agePack.days} days, ${agePack.hours} hours, ${agePack.minutes} minutes and ${agePack.seconds} seconds old to be exact`
+                        }
+                        if(timer1){
+                            clearInterval(timer1)
+                            timer1 = null
+                        }
+                        timer1 = setInterval(fn, 1000)
+                        fn()
+                    }
+                    if(before == 3){
+                        if(timer1){
+                            clearInterval(timer1)
+                            timer1 = null
+                        }
                     }
                 }
             },
@@ -249,14 +339,20 @@
 
                     } else {
                         me.error = ''
-                        me.pixels = Array.from(Array(71).keys()).map(i => i + 1 )
+                        // me.pixels = Array.from(Array(100).keys()).map(i => i + 1 )
+                        me.pixels = _.chunk(Array.from(Array(100).keys()).map(i => i + 1 ), 10)
                         // me.page = 2
                     }
                 },
                 pixelize: function(px){
                     let px1 = (px <= this.age) ? 'px1' : ''
+                    let px2 = (px <= 71) ? 'px2' : ''
+                    return `px ${px1} ${px2}`
+                },
+                pixelize1: function(px){
+                    let px1 = (px <= this.age) ? 'px1' : ''
                     return `px ${px1}`
-                }
+                },
             }
         })
     </script>

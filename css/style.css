@@ -68,6 +68,10 @@ input[type="text"]{
     border-radius: 3px;
     color-scheme: dark;
 }
+.text-orange{
+    color: orange;
+    text-shadow: 0 0 3px #222;
+}
 input[type="text"]{
     width: 60px;
 }
@@ -93,7 +97,7 @@ input[type="text"]{
 
 .train {
     animation: scan 30s ;
-    animation-delay: 5s;
+    /* animation-delay: 5s; */
 }
 .train.pause {
     animation-play-state: paused;
@@ -107,21 +111,53 @@ input[type="text"]{
 }
 
 .px {
-    width: 50px;
-    height: 50px;
+    width: 12px;
+    height: 12px;
     color: #856404;
     background-color: #fff3cd;
-    opacity: 0.6;
-    border-radius: 100%;
-    display: flex;
+    display: inline-block;
     align-items: center;
     justify-content: center;
-    margin: 3px;
+    margin: 4px;
+    box-shadow: 0 0 3px #333;
+    position: relative;
+    cursor: pointer;
+}
+
+.px2 {
+    background: yellow;
+    color: white;
 }
 .px1 {
     background: orange;
     color: white;
-    opacity: 0.9;
+}
+.px0 {
+    background: orange;
+    color: white;
+}
+
+.px-point {
+    width: 100px; 
+    top: -3px;
+    left: 100%; 
+    position: absolute;
+    text-align: left;
+    z-index: 5;
+    margin-left: 2px;
+    font-size: 12px;
+    text-shadow: 0 0 5px #222;
+}
+.px-point2 {
+    width: 100px; 
+    top: -3px;
+    right: 100%; 
+    position: absolute;
+    text-align: right;
+    z-index: 5;
+    margin-right: 2px;
+    font-size: 12px;
+    text-shadow: 0 0 5px #222;
 }
 
 /* Breakpoints */
