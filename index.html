@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <base href="http://127.0.0.1:9293" />
+    <link rel="shortcut icon" href="/favicon.png" />
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Your Life in Pixels</title>
+</head>
+
+<body>
+    <div id="vApp" v-cloak class="container pt-5 pb-5">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                
+                <!-- <h1 class="h5 mb-5">Your Life in Pixels</h1> -->
+                <div class="form-row align-items-center mb-4 mt-5">
+                    <div class="col-md-12 text-md-left">
+                        <label for="birthDate mb-0">When is your birthday?</label>
+                    </div>
+                    <div class="col-md-12 text-md-left">
+                        <input @change="onChange" v-model="birthDate" type="date">
+                    </div>
+                </div>
+                <div class="form-row align-items-center mb-4">
+                    <div class="col-md-12 d-flex flex-wrap justify-content-center">
+                        <div v-if="age" class="mb-2 d-inline-block alert alert-warning">You are ${age} years old</div>
+                        <div v-if="error" class="d-inline-block alert alert-warning">${error}</div>
+                    </div>
+                </div>
+                <div v-if="age" class="form-row align-items-center mb-4">
+                    <div class="col-md-12 d-flex flex-wrap justify-content-center">
+                        <div :class="pixelize(px)" v-for="px in pixels">${px}</div>
+                    </div>
+                </div>
+                <div v-if="age" class="form-row align-items-center mb-4">
+                    <div class="col-md-12">
+                        <div v-if="age" class="mb-2 d-inline-block alert alert-warning">On average, a Filipino can live up to 71</div>
+                        <br>
+                        <div v-if="age" class="mb-2 d-inline-block alert alert-warning">You are now at ${Math.round(age/71*100)}%</div>
+                        <br>
+                        <div v-if="age" class="mb-2 d-inline-block alert alert-warning">Time is the most precious commodity. Are you spending it wisely?</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <img class="bg" src="/images/bg.jpg" alt="" width="1920" height="1919">
+    <img class="train" src="/images/train.png" alt="" width="1037" height="195">
+
+    <script src="/js/jquery.slim.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/moment.min.js"></script>
+    <script src="/js/vue.js"></script>
+    <script>
+        let vApp = new Vue({
+            el: '#vApp',
+            delimiters: ["${", "}"],
+            mixins: [
+            ],
+            data: {
+                pending: false,
+                // birthDate: '1986-09-15',
+                birthDate: '',
+                error: '',
+                pixels: [],
+            },
+            mounted: function(){
+                // this.onChange()
+            },
+            computed: {
+                age: function(){
+                    const me = this
+                    let mDate = moment()
+                    let mBirthDate = moment(me.birthDate)
+                    if(mBirthDate.isValid()){
+                        let diff = mDate.diff(mBirthDate, 'years')
+
+                        if(diff > 5 && diff <= 100){
+                            return diff
+                        }
+                    }
+                    return 0
+                }
+            },
+            methods: {
+                onChange: function(){
+                    const me = this
+
+                    let mDate = moment()
+                    let mBirthDate = moment(me.birthDate)
+                    if(mBirthDate.isValid()){
+                        let diff = mDate.diff(mBirthDate, 'years')
+
+                        if(diff > 1000){
+                            me.error = ''
+
+                        } else if(diff > 100){
+                            me.error = 'You look younger than your age...'
+
+                        } else if (diff <= 5){
+                            me.error = 'You are too young to use this...'
+
+                        } else {
+                            me.error = ''
+                            console.log(diff)
+                            me.pixels = Array.from(Array(71).keys()).map((i,k)=>k+1)
+                        }
+                    }
+                },
+                pixelize: function(px){
+                    let px1 = (px <= this.age) ? 'px1' : ''
+                    return `px ${px1}`
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
