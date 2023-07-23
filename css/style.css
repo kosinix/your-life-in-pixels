@@ -95,10 +95,9 @@ input[type="text"]{
     animation: scan 30s ;
     animation-delay: 5s;
 }
-/* .train.pause {
+.train.pause {
     animation-play-state: paused;
-    animation-name: none;
-} */
+}
 
 @keyframes scan {
     0% { transform:translate(0%, -64%)}
