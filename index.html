@@ -87,7 +87,7 @@
                         </div>
                         <div class="col-md-12 mb-4 ">
                             <div v-for="chunk in pixels" class="d-flex flex-wrap justify-content-center">
-                                <div :class="pixelize1(px)" v-for="px in chunk" :title="`Year ${px}`">
+                                <div :class="pixelize1(px)" v-for="px in chunk" :title="`Year ${px}`" style="opacity: 0;transform: translateX(250px);">
                                     <small v-if="px==100" class="text-white px-point">← 100th year</small>
                                 </div>
                             </div>
@@ -159,6 +159,7 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/moment.min.js"></script>
     <script src="js/lodash.min.js"></script>
+    <script src="js/anime.min.js"></script>
     <script src="js/vue.js"></script>
     <script>
         
@@ -196,10 +197,10 @@
                 me.days = Array.from(Array(31).keys()).map(i => i + 1)
 
                 jQuery('#birthYear').focus()
-                // me.birthDay = '15'
-                // me.birthMonth = '09'
-                // me.birthYear = '1986'
-                // me.onChange()
+                me.birthDay = '15'
+                me.birthMonth = '09'
+                me.birthYear = '1986'
+                me.onChange()
                 // me.page = 4
 
 
@@ -241,6 +242,18 @@
                             clearInterval(timer1)
                             timer1 = null
                         }
+                    }
+                    if(current == 4.1){
+                        me.$nextTick(function(){
+                            anime({
+                                targets: ['.px'],
+                                keyframes: [
+                                    {translateX: 0, opacity:1}
+                                ],
+                                delay: anime.stagger(100)
+                            });
+                        })
+                        
                     }
                 }
             },
